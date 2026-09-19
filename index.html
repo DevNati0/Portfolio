@@ -41,7 +41,11 @@
         }
 
         /* ---------- En-tête ---------- */
-        .site-header { border: 1px solid rgba(39, 39, 42, 0.8); }
+        .site-header { 
+            position: relative;
+            z-index:100;
+            border: 1px solid rgba(39, 39, 42, 0.8); 
+        }
 
         .site-header-inner {
             max-width: 72rem;
@@ -77,6 +81,9 @@
 
         .hamburg-nav{
             display: none;
+            position : absolute;
+            top: 2vw;
+            right: 2vh;
             font-size: 180%;
         }
 
@@ -534,11 +541,33 @@
             color: #71717a;
         }
 
+
+        .main-nav.mobile-menu {
+            margin-right: 0;
+        }
         /* ---------- Tablette et plus (640px) ---------- */
         @media screen and (max-width: 640px){
             .main-nav {
-                display: none;
+                position: absolute;
+                top: 100%;             /* juste sous l'en-tête */
+                right: 0;              /* collé à droite, sous les 3 barres */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3rem;
+                padding: 1rem 0;
+                font-size: 1.5rem;
+                width: 50vw;
+                height: 32vh;
+                background: rgb(22, 27, 38);   /* fond plein, sinon on voit la page à travers */
+                margin-right: -100%;
+                border: 1px solid #18181b;
+                border-top: none;
+                border-right: none;
+                transition: all 0.5s ease;
             }
+
+            .main-nav.mobile-menu { display: flex; }
 
             .hamburg-nav{
                 display: block;
@@ -598,7 +627,7 @@
                 <a class="nav-link" href="#profile">Profil</a>
                 <a class="nav-link" href="#portfolio">Portfolio</a>
                 <a class="nav-link" href="#skills">Compétences</a>
-                <a class="nav-cta" href="#contact">Contact</a>
+                <a class="nav-cta" href="#">Contact</a>
             </nav>
         </div>
     </header>
@@ -880,6 +909,14 @@
             });
         });
 
+
+
+        const menuHamburger = document.querySelector(".hamburg-nav")
+        const navLinks = document.querySelector(".main-nav")
+ 
+        menuHamburger.addEventListener('click',()=>{
+        navLinks.classList.toggle('mobile-menu')
+        })
     </script>
 </body>
 </html>
