@@ -759,19 +759,17 @@
     </footer>
 
     
-    <script>
+<script>
 
         // ================= À CONFIGURER =================
-        const YOUTUBE_API_KEY = 'CLE';   // clé "YouTube Data API v3"
-        const PLAYLIST_ID = 'PLD4fnr0MFCzE';              // identifiant complet (paramètre list= du lien)
-        const NEW_DAYS = 5;                               // une vidéo plus récente que ça reçoit le bandeau NEW
-        const MAX_VIDEOS = 20;                            // nombre de vidéos affichées (les dernières de la playlist)
+        const PLAYLIST_ID = 'PLD4fnr0MFCzE';   // identifiant complet (paramètre list= du lien)
+        const NEW_DAYS = 5;                    // une vidéo plus récente que ça reçoit le bandeau NEW
+        const MAX_VIDEOS = 20;                 // nombre de vidéos affichées (les dernières de la playlist)
         // =================================================
 
         const carousel = document.querySelector('.carousel');
 
-        // ---------- Cache navigateur (évite de refaire les requêtes) ----------
-        const CACHE_MINUTES = 60;          // durée du cache de la playlist
+        // ---------- Cache navigateur (avatar) ----------
         const AVATAR_CACHE_HOURS = 6;      // durée du cache de l'avatar
 
         function readCache(key, maxAgeMs) {
@@ -812,45 +810,7 @@
             }
         }
 
-        // ---------- Playlist YouTube ----------
-        // Récupère les vidéos de la playlist (50 par page) en ne demandant que les champs utiles
-        async function fetchPlaylistItems() {
-            const items = [];
-            let pageToken = '';
-            do {
-                const url = 'https://www.googleapis.com/youtube/v3/playlistItems'
-                    + '?part=snippet,contentDetails&maxResults=50'
-                    + '&fields=nextPageToken,items(snippet(title,description,thumbnails(maxres/url,standard/url,high/url,medium/url,default/url)),contentDetails(videoId,videoPublishedAt))'
-                    + '&playlistId=' + encodeURIComponent(PLAYLIST_ID)
-                    + '&key=' + encodeURIComponent(YOUTUBE_API_KEY)
-                    + (pageToken ? '&pageToken=' + encodeURIComponent(pageToken) : '');
-                const response = await fetch(url);
-                if (!response.ok) {
-                    const error = new Error('API YouTube : erreur ' + response.status);
-                    error.status = response.status;
-                    throw error;
-                }
-                const data = await response.json();
-                items.push(...data.items);
-                pageToken = data.nextPageToken || '';
-            } while (pageToken);
-            return items;
-        }
-
-        function toVideo(item) {
-            const thumbnails = item.snippet.thumbnails || {};
-            const thumbnail = thumbnails.maxres || thumbnails.standard || thumbnails.high || thumbnails.medium || thumbnails.default;
-            return {
-                id: item.contentDetails.videoId,
-                title: item.snippet.title,
-                description: item.snippet.description.slice(0, 200),
-                // Date de publication réelle de la vidéo (et non la date d'ajout à la playlist).
-                // Absente pour les vidéos privées ou supprimées, qui sont alors ignorées.
-                publishedAt: Date.parse(item.contentDetails.videoPublishedAt),
-                thumbnail: thumbnail && thumbnail.url
-            };
-        }
-
+        // ---------- Playlist YouTube (lue depuis playlist.json) ----------
         // Bandeau NEW : uniquement si la vidéo a été publiée il y a moins de NEW_DAYS jours
         function isNew(video) {
             const ageInDays = (Date.now() - video.publishedAt) / 86400000;
@@ -887,12 +847,6 @@
             return card;
         }
 
-        const ERROR_MESSAGES = {
-            400: "Clé API invalide.",
-            403: "Clé API refusée (restrictions ou quota dépassé).",
-            404: "Playlist introuvable : vérifie que l'identifiant est complet et que la playlist est publique ou non répertoriée."
-        };
-
         function showStatus(message) {
             const status = document.createElement('p');
             status.className = 'carousel-status';
@@ -901,37 +855,20 @@
         }
 
         async function loadPlaylist() {
-            if (YOUTUBE_API_KEY === 'COLLE_TA_CLE_API_ICI') {
-                showStatus("Colle ta clé API YouTube dans le script (YOUTUBE_API_KEY) pour afficher les vidéos de ta playlist.");
-                return;
-            }
+            try {
+                const response = await fetch('playlist.json');
+                if (!response.ok) throw new Error('Erreur ' + response.status);
+                const videos = (await response.json()).slice(0, MAX_VIDEOS);
 
-            const cacheKey = 'playlist-' + PLAYLIST_ID;
-            let videos = readCache(cacheKey, CACHE_MINUTES * 60000);
-
-            if (!videos) {
-                try {
-                    videos = (await fetchPlaylistItems())
-                        .map(toVideo)
-                        .filter(video => video.thumbnail && !isNaN(video.publishedAt))
-                        .reverse()                // ordre de la playlist inversé : la dernière à gauche
-                        .slice(0, MAX_VIDEOS);
-                    if (videos.length > 0) writeCache(cacheKey, videos);
-                } catch (error) {
-                    console.error(error);
-                    videos = readCache(cacheKey, Infinity);   // ancienne version si l'API échoue
-                    if (!videos) {
-                        showStatus(ERROR_MESSAGES[error.status] || "Impossible de charger la playlist.");
-                        return;
-                    }
+                if (videos.length === 0) {
+                    showStatus("Aucune vidéo publique trouvée dans cette playlist.");
+                    return;
                 }
+                carousel.replaceChildren(...videos.map(createCard));
+            } catch (error) {
+                console.error(error);
+                showStatus("Impossible de charger les vidéos.");
             }
-
-            if (videos.length === 0) {
-                showStatus("Aucune vidéo publique trouvée dans cette playlist.");
-                return;
-            }
-            carousel.replaceChildren(...videos.map(createCard));
         }
 
         loadPlaylist();
