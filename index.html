@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Nati0</title>
+    <link rel="icon" href="https://cdn.discordapp.com/avatars/710144068537286708/a3d5809636232a6d7f131f48779ca2c4.webp?size=1024">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ---------- Base ---------- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { line-height: 1.5; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Outfit', sans-serif;
+            background: #0d0f17;
+            color: #f3f4f6;
+        }
+
+        h1, h2, h3, h4 { font-size: inherit; font-weight: inherit; }
+        img { display: block; max-width: 100%; height: auto; }
+        a { color: inherit; text-decoration: none; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0f17; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+
+        /* Fond "verre" partagé par tous les panneaux */
+        .site-header, .profile-card, .skill-card, .player, .video-card {
+            background: rgba(22, 27, 38, 0.75);
+            backdrop-filter: blur(12px);
+        }
+
+        /* ---------- En-tête ---------- */
+        .site-header { border: 1px solid rgba(39, 39, 42, 0.8); }
+
+        .site-header-inner {
+            max-width: 72rem;
+            height: 4rem;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: #fff;
+        }
+        .logo-icon { font-size: 1.5rem; line-height: 2rem; color: #eab308; }
+        .logo-accent { color: #facc15; }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            font-weight: 500;
+        }
+
+        .hamburg-nav{
+            display: none;
+            font-size: 180%;
+        }
+
+        .hamburg-nav:hover{
+            color:#c7c7c7;
+            cursor:pointer;
+        }
+
+
+        .nav-link { color: #d4d4d8; transition: color 0.15s; }
+        .nav-link:hover { color: #fff; }
+        .nav-cta {
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            background: #eab308;
+            color: #000;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(234, 179, 8, 0.2), 0 2px 4px -2px rgba(234, 179, 8, 0.2);
+            transition: background-color 0.15s;
+        }
+        .nav-cta:hover { background: #facc15; }
+
+        /* ---------- Profil ---------- */
+        .profile { padding: 3rem 1rem; }
+
+        .profile-card {
+            position: relative;
+            overflow: hidden;
+            max-width: 56rem;
+            margin: 0 auto;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        /* Halos décoratifs */
+        .profile-card::before, .profile-card::after {
+            content: "";
+            position: absolute;
+            width: 15rem;
+            height: 15rem;
+            border-radius: 50%;
+            filter: blur(64px);
+        }
+        .profile-card::before { top: -6rem; right: -6rem; background: rgba(234, 179, 8, 0.1); }
+        .profile-card::after { bottom: -6rem; left: -6rem; background: rgba(168, 85, 247, 0.1); }
+
+        .profile-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .avatar {
+            width: 7rem;
+            height: 7rem;
+            border: 4px solid #ea0808;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 25px rgba(234, 8, 8, 0.6), inset 0 0 15px rgba(234, 179, 8, 0.4);
+        }
+
+        .profile-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .profile-name {
+            font-size: 1.875rem;
+            line-height: 2.25rem;
+            font-weight: 800;
+            letter-spacing: 0.025em;
+            color: #fff;
+        }
+
+        .badges { display: flex; align-items: center; gap: 0.5rem; }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 600;
+        }
+        .badge--dev { background: rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.3); color: #d8b4fe; }
+        .badge--editor { background: rgba(249, 115, 22, 0.2); border-color: rgba(249, 115, 22, 0.3); color: #fdba74; }
+
+        .info-emoji { font-size: 1.25rem; line-height: 1.75rem; }
+
+        .profile-tagline {
+            padding-top: 0.25rem;
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            font-weight: 500;
+            font-style: italic;
+            color: #facc15;
+        }
+
+        .profile-actions {
+            padding-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.15s, border-color 0.15s;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            font-weight: 500;
+            color: #fff;
+        }
+        .button--discord {
+            background: #5865f2;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .button--email { background: #27272a; border: 1px solid #3f3f46; }
+        .button--email i { color: #facc15; }
+        .button--youtube { background: rgba(220, 38, 38, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; }
+
+        /* Survol : couleur plus claire */
+        .button--discord:hover { background: #424ed3; }
+        .button--email:hover { background: #3f3f46; border-color: #52525b; }
+        .button--youtube:hover { background: rgba(220, 38, 38, 0.3); }
+
+        /* ---------- Compétences ---------- */
+        .skills { padding: 1.5rem 1rem; }
+
+        .skills-grid {
+            max-width: 56rem;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .skill-card { padding: 1rem; border: 1px solid #27272a; border-radius: 1rem; }
+        .skill-card--edit { --accent: #e46e20; }
+        .skill-card--sound { --accent: #4dffa6; }
+        .skill-card--business {--accent: #4d59ff;}
+        .skill-card--fastreact { --accent: #7700ff; }
+
+        .skill-icon { margin-bottom: 0.8rem; font-size: 2.5rem; line-height: 2.5rem; color: var(--accent); }
+        .skill-title { font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; color: #fff; }
+        .skill-text { margin-top: 0.25rem; font-size: 0.75rem; line-height: 1rem; color: #a1a1aa; }
+
+        /* ---------- Portfolio ---------- */
+        .portfolio {
+            flex: 1;
+            width: 100%;
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+        }
+
+        .portfolio-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #27272a;
+        }
+        .portfolio-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+            color: #eab308;
+        }
+        .portfolio-title { font-size: 1.5rem; line-height: 2rem; font-weight: 700; color: #fff; }
+        .portfolio-subtitle { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; color: #a1a1aa; }
+
+        /* Lecteur principal */
+        .player {
+            margin-bottom: 2.5rem;
+            padding: 1rem;
+            border: 1px solid #27272a;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .player-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .player-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .player-title i { font-size: 1.25rem; line-height: 1.75rem; color: #ef4444; }
+        .player-badge {
+            padding: 0.25rem 0.625rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 9999px;
+            background: rgba(239, 68, 68, 0.2);
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 500;
+            color: #f87171;
+        }
+        .player-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #27272a;
+            border-radius: 1rem;
+            background: #000;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .player-frame iframe{
+            aspect-ratio: 16/9;
+        }
+        .player-play {
+            position: relative;
+            width: 4.25rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            background: #dc2626;
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+        /* Carrousel de cartes vidéo */
+        .carousel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .carousel-title i { color: #facc15; }
+
+        .carousel {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            padding-top: 0.25rem;
+            padding-bottom: 1rem;
+        }
+        .carousel::-webkit-scrollbar { display: none; }
+        .carousel-status { font-size: 0.875rem; line-height: 1.25rem; color: #a1a1aa; }
+
+        .video-card {
+            display: block;
+            flex-shrink: 0;
+            width: 20rem;
+            overflow: hidden;
+            border: 1px solid #27272a;
+            border-radius: 1rem;
+            scroll-snap-align: start;
+        }
+
+        .video-thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #18181b; }
+        .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            transition: background-color 0.15s;
+        }
+        .video-card:hover .video-overlay { background: rgba(0, 0, 0, 0.2); }
+        .video-play {
+            width: 3.5rem;
+            height: 3.5rem;
+            padding-left: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eab308;
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            color: #000;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        /* Bandeau NEW (ajouté automatiquement, voir le script) */
+        .video-new {
+            position: absolute;
+            top: 0.75rem;
+            left: 0;
+            z-index: 1;
+            padding: 0.25rem 1rem 0.25rem 0.75rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            background: #dc2626;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: #fff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-body { padding: 1rem; }
+        .video-title {
+            margin-top: 0.25rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            font-size: 1rem;
+            line-height: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .video-title:first-child { margin-top: 0; }
+        .video-text {
+            min-height: 2rem;
+            margin-top: 0.25rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            color: #a1a1aa;
+        }
+
+        /* ---------- Contact ---------- */
+        .contact {
+            padding: 3rem 1rem;
+            border-top: 1px solid rgba(39, 39, 42, 0.6);
+            background: #09090b;
+        }
+        .contact-inner { max-width: 56rem; margin: 0 auto; text-align: center; }
+        .contact-inner > * + * { margin-top: 1.5rem; }
+
+        .contact-title { font-size: 1.875rem; line-height: 2.25rem; font-weight: 800; color: #fff; }
+        .contact-text {
+            max-width: 32rem;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            color: #a1a1aa;
+        }
+        .contact-actions {
+            padding-top: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .contact-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .contact-button--discord {
+            background: #5865f2;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2), 0 4px 6px -4px rgba(99, 102, 241, 0.2);
+        }
+        
+        .contact-button--discord i { font-size: 1.5rem; line-height: 2rem; }
+        .contact-button--email { background: #27272a; border: 1px solid #3f3f46; }
+        .contact-button--email i { font-size: 1.25rem; line-height: 1.75rem; color: #facc15; }
+
+        .contact-info { text-align: left; }
+        .contact-label { font-size: 0.75rem; line-height: 1rem; }
+        .contact-button--discord .contact-label { color: #c7d2fe; }
+        .contact-button--email .contact-label { color: #a1a1aa; }
+        .contact-value { font-weight: 700; }
+
+
+        .arrow:first-of-type {
+            margin-left: auto;
+        }
+
+        .arrow {
+            background-color: transparent;
+            display: flex;
+            color: #fff;
+            border: none;
+            font-size: 25px;
+            cursor:pointer;
+        }
+
+        .arrow:hover {
+            color: #d6af00;
+        }
+
+        .soon {
+            font-size: 160%;
+            text-align: center;
+            color : #fff;
+            font-family: 'Montserrat';
+        }
+
+
+
+
+        /* ---------- Pied de page ---------- */
+        .site-footer {
+            padding: 1.5rem 0;
+            border-top: 1px solid #18181b;
+            background: rgba(0, 0, 0, 0.6);
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            color: #71717a;
+        }
+
+        /* ---------- Tablette et plus (640px) ---------- */
+        @media screen and (max-width: 640px){
+            .main-nav {
+                display: none;
+            }
+
+            .hamburg-nav{
+                display: block;
+            }
+        }
+        @media (min-width: 640px) {
+            .site-header-inner { padding: 0 1.5rem; }
+            .main-nav { gap: 1.5rem; }
+
+            .profile { padding: 4rem 1rem; }
+            .profile-card { padding: 2.5rem; }
+            .profile-content { gap: 2rem; }
+            .avatar { width: 9rem; height: 9rem; }
+            .profile-name { font-size: 2.25rem; line-height: 2.5rem; }
+            .badge { font-size: 0.875rem; line-height: 1.25rem; }
+
+            .skills-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+            .portfolio-title { font-size: 1.875rem; line-height: 2.25rem; }
+            .player { padding: 1.5rem; }
+            .video-card { width: 24rem; }
+
+            
+        }
+
+        .contact-text { font-size: 1rem; line-height: 1.5rem; }
+        .contact-actions { flex-direction: row; }
+        .contact-button { width: auto; }
+
+        /* ---------- Ordinateur (768px) ---------- */
+        @media (min-width: 768px) {
+            .profile-content { flex-direction: row; align-items: flex-start; }
+            .profile-details { text-align: left; }
+            .profile-header, .profile-actions { justify-content: flex-start; }
+            .portfolio-header { flex-direction: row; align-items: flex-end; }
+
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="site-header-inner">
+            <div class="logo">
+                <span>Nati0</span>
+            </div>
+            <nav class="hamburg-nav">
+                <a class="nav-hamburg">
+                    <i class="fa-solid fa-bars"></i>
+                </a>
+            </nav>
+            <nav class="main-nav">
+                <!-- Remplace chaque href="#" par ta destination -->
+                <a class="nav-link" href="#">Profil</a>
+                <a class="nav-link" href="#">Portfolio</a>
+                <a class="nav-link" href="#">Compétences</a>
+                <a class="nav-cta" href="#">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="profile">
+        <div class="profile-card">
+            <div class="profile-content">
+
+                <div>
+                    <img class="avatar" src="https://cdn.discordapp.com/avatars/710144068537286708/a3d5809636232a6d7f131f48779ca2c4.webp?size=256" alt="Avatar de Nati0">
+                </div>
+
+                <div class="profile-details">
+                    <div class="profile-header">
+                        <h1 class="profile-name">Nati0</h1>
+                        <div class="badges">
+                            <span class="badge badge--dev">Développeur</span>
+                            <span class="badge badge--editor">Monteur</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-infos">
+                        <p>
+                            <span class="info-emoji">🎬</span>
+                            <span>Monteur vidéo format long et court</span>
+                        </p>
+                        <p>
+                            <span class="info-emoji">🎮</span>
+                            <span>Spécialisé vidéo gaming</span>
+                        </p>
+                    </div>
+
+                    <p class="profile-tagline">« Tu veux une vidéo divertissante ? Viens vers moi. »</p>
+
+                    <div class="profile-actions">
+                        <!-- Remplace chaque href="#" par ton lien -->
+                        <a class="button button--discord" href="https://discord.com/users/710144068537286708" target=_blank>
+                            <i class="fa-brands fa-discord"></i>
+                            <span>Contact discord</span>
+                        </a>
+                        
+                        <a class="button button--email" href="#" onclick="navigator.clipboard.writeText('contact@exemple.com'); const span = this.querySelector('span'); span.innerText = 'Copié !'; setTimeout(() => span.innerText = 'Mon mail', 2000);";>
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Mon mail</span>
+                        </a>
+
+                        <a class="button button--youtube" href="https://www.youtube.com/watch?v=i6m1uOqb1Us&list=PLD4fnr0MFCzE" target=_blank>
+                            <i class="fa-brands fa-youtube"></i>
+                            <span>Mon travail</span>
+                        </a>
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="skills">
+        <div class="skills-grid">
+            <div class="skill-card skill-card--edit">
+                <i class="skill-icon fa-solid fa-fire"></i>
+                <h3 class="skill-title">Montage Dynamique</h3>
+                <p class="skill-text">Vidéo rythmé et drôle</p>
+            </div>
+            <div class="skill-card skill-card--sound">
+                <i class="skill-icon fa-solid fa-chart-simple"></i>
+                <h3 class="skill-title">Sound Design</h3>
+                <p class="skill-text">SFX diversifié et immersif</p>
+            </div>
+            <div class="skill-card skill-card--business"> 
+                <i class="skill-icon fa-solid fa-building-circle-check"></i>
+                <h3 class="skill-title">Entreprise déclaré</h3>
+                <p class="skill-text">Facturation simple et conforme</p>
+            </div>
+            <div class="skill-card skill-card--fastreact">
+                <i class="skill-icon fa-solid fa-person-running"></i>
+                <h3 class="skill-title">Réactif</h3>
+                <p class="skill-text">Réponse en moins de 24h</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio">
+
+        <div class="portfolio-header">
+            <div>
+                <div class="portfolio-label"><i class="fa-solid fa-play"></i> Mon Portfolio</div>
+                <h2 class="portfolio-title">Vidéo présentation</h2>
+                <p class="portfolio-subtitle">Présentation de mon travail, mes compétences et autres.</p>
+            </div>
+        </div>
+
+        <div class="player">
+            <div class="player-header">
+                <span class="player-badge">INTRODUCTION</span>
+            </div>
+            <div class="player-frame">
+                <p class="soon">Comming soon...</p>
+                <!-- 
+                <iframe 
+                    
+                    src="https://www.youtube.com/embed/i6m1uOqb1Us"  
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                    
+                </iframe>
+                -->
+            </div>
+        </div>
+
+        <h3 class="carousel-title">
+            <i class="fa-solid fa-photo-film"></i>
+            <span>Tous mes montage vidéos</span>
+
+            <button class="arrow" data-direction="-1"><i class="arrow fa-solid fa-angle-left"></i></button>
+            <button class="arrow" data-direction="1"><i class="arrow fa-solid fa-angle-right"></i></i></button>
+        </h3>
+
+        
+
+        <!-- Les cartes sont créées par le script en bas de page, à partir de ta playlist YouTube -->
+        <div class="carousel">
+            <p class="carousel-status">Chargement des vidéos…</p>
+        </div>
+    </section>
+
+    <section class="contact">
+        <div class="contact-inner">
+            <h2 class="contact-title">Travaillons Ensemble !</h2>
+            <p class="contact-text">
+                Tu as un projet de montage vidéo, un besoin pour ta chaîne YouTube ou tes réseaux ? Contacte-moi directement !
+            </p>
+            <div class="contact-actions">
+                <div class="contact-button contact-button--discord">
+                    <i class="fa-brands fa-discord"></i>
+                    <div class="contact-info">
+                        <div class="contact-label">Discord</div>
+                        <div class="contact-value">nati0___</div>
+                    </div>
+                </div>
+                <div class="contact-button contact-button--email">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div class="contact-info">
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">contact@nati0.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 Nati0 - Portfolio Monteur Vidéo & Développeur. Tous droits réservés.</p>
+    </footer>
+
+    
+    <script>
+
+        // ================= À CONFIGURER =================
+        const YOUTUBE_API_KEY = 'AIzaSyCbv5eHI-yPJrOHUf_qlazz0-PzLrodZIw';   // clé "YouTube Data API v3"
+        const PLAYLIST_ID = 'PLD4fnr0MFCzE';              // identifiant complet (paramètre list= du lien)
+        const NEW_DAYS = 5;                               // une vidéo plus récente que ça reçoit le bandeau NEW
+        const MAX_VIDEOS = 20;                            // nombre de vidéos affichées (les dernières de la playlist)
+        // =================================================
+
+        const carousel = document.querySelector('.carousel');
+
+        // ---------- Cache navigateur (évite de refaire les requêtes) ----------
+        const CACHE_MINUTES = 60;          // durée du cache de la playlist
+        const AVATAR_CACHE_HOURS = 6;      // durée du cache de l'avatar
+
+        function readCache(key, maxAgeMs) {
+            try {
+                const entry = JSON.parse(localStorage.getItem(key));
+                if (entry && Date.now() - entry.time < maxAgeMs) return entry.data;
+            } catch (e) {}
+            return null;
+        }
+
+        function writeCache(key, data) {
+            try { localStorage.setItem(key, JSON.stringify({ time: Date.now(), data })); } catch (e) {}
+        }
+
+        // ---------- Avatar Discord (via Lanyard, avec l'ID uniquement) ----------
+        const DISCORD_ID = '710144068537286708';
+
+        async function loadAvatar() {
+            const image = document.querySelector('.avatar');
+            const cacheKey = 'avatar-' + DISCORD_ID;
+            let hash = readCache(cacheKey, AVATAR_CACHE_HOURS * 3600000);
+
+            if (!hash) {
+                try {
+                    const response = await fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID);
+                    const json = await response.json();
+                    hash = json.success && json.data.discord_user.avatar;
+                    if (hash) writeCache(cacheKey, hash);
+                } catch (error) {
+                    console.error(error);
+                }
+                hash = hash || readCache(cacheKey, Infinity);   // ancienne valeur si la requête échoue
+            }
+
+            if (hash) {
+                const extension = hash.startsWith('a_') ? 'gif' : 'webp';   // avatar animé ou non
+                image.src = 'https://cdn.discordapp.com/avatars/' + DISCORD_ID + '/' + hash + '.' + extension + '?size=256';
+            }
+        }
+
+        // ---------- Playlist YouTube ----------
+        // Récupère les vidéos de la playlist (50 par page) en ne demandant que les champs utiles
+        async function fetchPlaylistItems() {
+            const items = [];
+            let pageToken = '';
+            do {
+                const url = 'https://www.googleapis.com/youtube/v3/playlistItems'
+                    + '?part=snippet,contentDetails&maxResults=50'
+                    + '&fields=nextPageToken,items(snippet(title,description,thumbnails(maxres/url,standard/url,high/url,medium/url,default/url)),contentDetails(videoId,videoPublishedAt))'
+                    + '&playlistId=' + encodeURIComponent(PLAYLIST_ID)
+                    + '&key=' + encodeURIComponent(YOUTUBE_API_KEY)
+                    + (pageToken ? '&pageToken=' + encodeURIComponent(pageToken) : '');
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const error = new Error('API YouTube : erreur ' + response.status);
+                    error.status = response.status;
+                    throw error;
+                }
+                const data = await response.json();
+                items.push(...data.items);
+                pageToken = data.nextPageToken || '';
+            } while (pageToken);
+            return items;
+        }
+
+        function toVideo(item) {
+            const thumbnails = item.snippet.thumbnails || {};
+            const thumbnail = thumbnails.maxres || thumbnails.standard || thumbnails.high || thumbnails.medium || thumbnails.default;
+            return {
+                id: item.contentDetails.videoId,
+                title: item.snippet.title,
+                description: item.snippet.description.slice(0, 200),
+                // Date de publication réelle de la vidéo (et non la date d'ajout à la playlist).
+                // Absente pour les vidéos privées ou supprimées, qui sont alors ignorées.
+                publishedAt: Date.parse(item.contentDetails.videoPublishedAt),
+                thumbnail: thumbnail && thumbnail.url
+            };
+        }
+
+        // Bandeau NEW : uniquement si la vidéo a été publiée il y a moins de NEW_DAYS jours
+        function isNew(video) {
+            const ageInDays = (Date.now() - video.publishedAt) / 86400000;
+            return ageInDays >= 0 && ageInDays < NEW_DAYS;
+        }
+
+        function createCard(video) {
+            const card = document.createElement('a');
+            card.className = 'video-card';
+            card.href = 'https://www.youtube.com/watch?v=' + video.id + '&list=' + PLAYLIST_ID;
+            card.target = '_blank';
+            card.rel = 'noopener';
+            card.innerHTML = `
+                <div class="video-thumb">
+                    <img loading="lazy">
+                    <div class="video-overlay">
+                        <div class="video-play"><i class="fa-solid fa-play"></i></div>
+                    </div>
+                </div>
+                <div class="video-body">
+                    <h4 class="video-title"></h4>
+                    <p class="video-text"></p>
+                </div>`;
+
+            const image = card.querySelector('img');
+            image.src = video.thumbnail;
+            image.alt = video.title;
+            card.querySelector('.video-title').textContent = video.title;
+            card.querySelector('.video-text').textContent = video.description;
+
+            if (isNew(video)) {
+                card.querySelector('.video-thumb').insertAdjacentHTML('beforeend', '<span class="video-new">NEW</span>');
+            }
+            return card;
+        }
+
+        const ERROR_MESSAGES = {
+            400: "Clé API invalide.",
+            403: "Clé API refusée (restrictions ou quota dépassé).",
+            404: "Playlist introuvable : vérifie que l'identifiant est complet et que la playlist est publique ou non répertoriée."
+        };
+
+        function showStatus(message) {
+            const status = document.createElement('p');
+            status.className = 'carousel-status';
+            status.textContent = message;
+            carousel.replaceChildren(status);
+        }
+
+        async function loadPlaylist() {
+            if (YOUTUBE_API_KEY === 'COLLE_TA_CLE_API_ICI') {
+                showStatus("Colle ta clé API YouTube dans le script (YOUTUBE_API_KEY) pour afficher les vidéos de ta playlist.");
+                return;
+            }
+
+            const cacheKey = 'playlist-' + PLAYLIST_ID;
+            let videos = readCache(cacheKey, CACHE_MINUTES * 60000);
+
+            if (!videos) {
+                try {
+                    videos = (await fetchPlaylistItems())
+                        .map(toVideo)
+                        .filter(video => video.thumbnail && !isNaN(video.publishedAt))
+                        .reverse()                // ordre de la playlist inversé : la dernière à gauche
+                        .slice(0, MAX_VIDEOS);
+                    if (videos.length > 0) writeCache(cacheKey, videos);
+                } catch (error) {
+                    console.error(error);
+                    videos = readCache(cacheKey, Infinity);   // ancienne version si l'API échoue
+                    if (!videos) {
+                        showStatus(ERROR_MESSAGES[error.status] || "Impossible de charger la playlist.");
+                        return;
+                    }
+                }
+            }
+
+            if (videos.length === 0) {
+                showStatus("Aucune vidéo publique trouvée dans cette playlist.");
+                return;
+            }
+            carousel.replaceChildren(...videos.map(createCard));
+        }
+
+        loadPlaylist();
+        loadAvatar();
+
+        // Flèches du carrousel
+        document.querySelectorAll('.arrow').forEach(arrow => {
+            arrow.addEventListener('click', () => {
+                carousel.scrollBy({ left: Number(arrow.dataset.direction) * 340, behavior: 'smooth' });
+            });
+        });
+
+    </script>
+</body>
+</html>
