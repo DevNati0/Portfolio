@@ -1,8 +1,9 @@
 name: Update playlist
+
 on:
   schedule:
-    - cron: '0 */6 * * *'    # toutes les 6 heures
-  workflow_dispatch:          # permet de le lancer à la main
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -12,13 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node fetch-playlist.mjs
+
+      - name: Récupérer la playlist
+        run: node fetch-playlist.mjs
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-      - run: |
+
+      - name: Enregistrer playlist.json
+        run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add playlist.json
