@@ -2,8 +2,8 @@ import { writeFileSync } from 'node:fs';
 
 const API_KEY = process.env.YOUTUBE_API_KEY;
 const PLAYLIST_ID = 'PLD4fnr0MFCzE';
-const MAX_VIDEOS = 20;
 
+// Récupère les vidéos de la playlist (50 par page) en ne demandant que les champs utiles
 async function fetchPlaylistItems() {
     const items = [];
     let pageToken = '';
@@ -30,6 +30,8 @@ function toVideo(item) {
         id: item.contentDetails.videoId,
         title: item.snippet.title,
         description: item.snippet.description.slice(0, 200),
+        // Date de publication réelle de la vidéo (et non la date d'ajout à la playlist).
+        // Absente pour les vidéos privées ou supprimées, qui sont alors ignorées.
         publishedAt: Date.parse(item.contentDetails.videoPublishedAt),
         thumbnail: thumbnail && thumbnail.url
     };
@@ -38,8 +40,7 @@ function toVideo(item) {
 const videos = (await fetchPlaylistItems())
     .map(toVideo)
     .filter(video => video.thumbnail && !isNaN(video.publishedAt))
-    .reverse()
-    .slice(0, MAX_VIDEOS);
+    .reverse();   // ordre de la playlist inversé : la dernière à gauche
 
 writeFileSync('playlist.json', JSON.stringify(videos, null, 2));
 console.log(videos.length + ' vidéos enregistrées');
