@@ -549,7 +549,7 @@
         @media screen and (max-width: 640px){
             .main-nav {
                 position: absolute;
-                top: 100%;             /* juste sous l'en-tête */
+                top: 0;             /* juste sous l'en-tête */
                 right: 0;              /* collé à droite, sous les 3 barres */
                 display: flex;
                 flex-direction: column;
@@ -558,7 +558,7 @@
                 padding: 1rem 0;
                 font-size: 1.5rem;
                 width: 50vw;
-                height: 32vh;
+                height: 40vh;
                 background: rgb(22, 27, 38);   /* fond plein, sinon on voit la page à travers */
                 margin-right: -100%;
                 border: 1px solid #18181b;
@@ -571,6 +571,7 @@
 
             .hamburg-nav{
                 display: block;
+                z-index: 150;
             }
         }
         @media (min-width: 640px) {
