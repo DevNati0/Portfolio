@@ -15,6 +15,7 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         html { line-height: 1.5; }
+        html { scroll-behavior: smooth; }
 
         body {
             min-height: 100vh;
@@ -594,15 +595,15 @@
             </nav>
             <nav class="main-nav">
                 <!-- Remplace chaque href="#" par ta destination -->
-                <a class="nav-link" href="#">Profil</a>
-                <a class="nav-link" href="#">Portfolio</a>
-                <a class="nav-link" href="#">Compétences</a>
-                <a class="nav-cta" href="#">Contact</a>
+                <a class="nav-link" href="#profile">Profil</a>
+                <a class="nav-link" href="#portfolio">Portfolio</a>
+                <a class="nav-link" href="#skills">Compétences</a>
+                <a class="nav-cta" href="#contact">Contact</a>
             </nav>
         </div>
     </header>
 
-    <section class="profile">
+    <section class="profile" id="profile">
         <div class="profile-card">
             <div class="profile-content">
 
@@ -680,7 +681,7 @@
         </div>
     </section>
 
-    <section class="portfolio">
+    <section class="portfolio" id="portfolio">
 
         <div class="portfolio-header">
             <div>
@@ -722,12 +723,12 @@
         
 
         <!-- Les cartes sont créées par le script en bas de page, à partir de ta playlist YouTube -->
-        <div class="carousel">
+        <div class="carousel" id="skills">
             <p class="carousel-status">Chargement des vidéos…</p>
         </div>
     </section>
 
-    <section class="contact">
+    <section class="contact" id="contact">
         <div class="contact-inner">
             <h2 class="contact-title">Travaillons Ensemble !</h2>
             <p class="contact-text">
