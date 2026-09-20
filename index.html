@@ -590,7 +590,7 @@
             font-weight: 700;
             color: #fff;
         }
-        .carousel-title i { color: #a855f7; }
+        .carousel-title i { color: #fff; }
         .carousel-title > i:first-child { color: #a855f7; }   /* même violet que le clip « Compétences » */
 
         .carousel {
@@ -627,6 +627,7 @@
             transition: background-color 0.15s;
         }
         .video-card:hover .video-overlay { background: rgba(0, 0, 0, 0.2); }
+        
         .video-play {
             width: 3.5rem;
             height: 3.5rem;
@@ -640,7 +641,16 @@
             line-height: 1.75rem;
             color: #ffffffa6;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            opacity: 0.8;
         }
+
+        .video-card:hover .video-play {
+            transition: opacity 0.2s;
+            opacity: 0;
+        }
+
+        
+        
 
         /* Bandeau NEW (ajouté automatiquement, voir le script) */
         .video-new {
@@ -752,7 +762,7 @@
         }
 
         .arrow:hover {
-            color: #6f00d6;
+            color: #ffffff;
         }
 
         .soon {
@@ -973,12 +983,20 @@
 
                     <div class="profile-infos">
                         <p>
+                            <span class="info-emoji">⏳</span>
+                            <span>Monteur depuis plus d'un an.</span>
+                        </p>
+                        <p>
                             <span class="info-emoji">🎬</span>
-                            <span>Monteur vidéo format long et court</span>
+                            <span>Monteur vidéo format long et court.</span>
                         </p>
                         <p>
                             <span class="info-emoji">🎮</span>
-                            <span>Spécialisé vidéo gaming</span>
+                            <span>Spécialisé vidéo gaming.</span>
+                        </p>
+                        <p>
+                            <span class="info-emoji">💵</span>
+                            <span>Prix moyen à 10€/min négociable.</span>
                         </p>
                     </div>
 
