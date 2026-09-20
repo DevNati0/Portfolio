@@ -812,7 +812,8 @@
 <script>
 
         // ================= À CONFIGURER =================
-        const PLAYLIST_ID = 'PLD4fnr0MFCzE';   // identifiant complet (paramètre list= du lien)
+        const PLAYLIST_ID = 'PLD4fnr0MFCzE';
+        const PLAYLIST_URL = 'https://portfolio-playlist.TON-SOUS-DOMAINE.workers.dev';   // adresse de ton Worker
         const NEW_DAYS = 5;                    // une vidéo plus récente que ça reçoit le bandeau NEW
         const MAX_VIDEOS = 20;                 // nombre de vidéos affichées (les dernières de la playlist)
         // =================================================
@@ -906,7 +907,7 @@
 
         async function loadPlaylist() {
             try {
-                const response = await fetch('playlist.json');
+                const response = await fetch(PLAYLIST_URL);
                 if (!response.ok) throw new Error('Erreur ' + response.status);
                 const videos = (await response.json()).slice(0, MAX_VIDEOS);
 
