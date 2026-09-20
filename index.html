@@ -36,7 +36,7 @@
 
         /* Fond "verre" partagé par tous les panneaux */
         .site-header, .profile-card, .skill-card, .player, .video-card {
-            background: rgba(22, 27, 38, 0.75);
+            background: rgb(22, 27, 38);
             backdrop-filter: blur(12px);
         }
 
@@ -77,6 +77,13 @@
             font-size: 0.875rem;
             line-height: 1.25rem;
             font-weight: 500;
+        }
+
+        .hamburg-nav .fa-xmark {
+            display: none;
+        }
+        .hamburg-nav .fa-bars {
+            display: block;
         }
 
         .hamburg-nav{
@@ -542,14 +549,11 @@
         }
 
 
-        .main-nav.mobile-menu {
-            margin-right: 0;
-        }
         /* ---------- Tablette et plus (640px) ---------- */
         @media screen and (max-width: 640px){
             .main-nav {
                 position: absolute;
-                top: 0;             /* juste sous l'en-tête */
+                top: 5vh;             /* juste sous l'en-tête */
                 right: 0;              /* collé à droite, sous les 3 barres */
                 display: flex;
                 flex-direction: column;
@@ -557,7 +561,7 @@
                 gap: 3rem;
                 padding: 1rem 0;
                 font-size: 1.5rem;
-                width: 50vw;
+                width: 70vw;
                 height: 40vh;
                 background: rgb(22, 27, 38);   /* fond plein, sinon on voit la page à travers */
                 margin-right: -100%;
@@ -567,11 +571,27 @@
                 transition: all 0.5s ease;
             }
 
-            .main-nav.mobile-menu { display: flex; }
-
             .hamburg-nav{
                 display: block;
                 z-index: 150;
+            }
+            
+            .main-nav.mobile-menu {
+                margin-right: 0;
+            }
+            /* L'icône change : on cache les barres, on affiche la croix */
+            .hamburg-nav .fa-xmark {
+                display: none;
+            }
+            .hamburg-nav .fa-bars {
+                display: block;
+            }
+
+            .hamburg-nav.mobile-menu .fa-bars {
+                display: none !important;
+            }
+            .hamburg-nav.mobile-menu .fa-xmark {
+                display: block !important;
             }
         }
         @media (min-width: 640px) {
@@ -621,6 +641,7 @@
             <nav class="hamburg-nav">
                 <a class="nav-hamburg">
                     <i class="fa-solid fa-bars"></i>
+                    <i class="fa-solid fa-xmark"></i> 
                 </a>
             </nav>
             <nav class="main-nav">
@@ -914,10 +935,18 @@
 
         const menuHamburger = document.querySelector(".hamburg-nav")
         const navLinks = document.querySelector(".main-nav")
- 
-        menuHamburger.addEventListener('click',()=>{
-        navLinks.classList.toggle('mobile-menu')
+
+        menuHamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-menu')
+            menuHamburger.classList.toggle('mobile-menu')
         })
+
+        navLinks.addEventListener('click', () => {
+            navLinks.classList.remove('mobile-menu')
+            menuHamburger.classList.remove('mobile-menu')
+        })
+
+        
     </script>
 </body>
 </html>
