@@ -489,6 +489,8 @@
             margin: 0 auto;
             padding: 3rem 1rem;
         }
+        /* Bloc « Tous mes montages vidéos » : pas de double espace avec le bloc suivant */
+        .portfolio--montages { flex: none; padding-bottom: 0; }
 
         .portfolio-header {
             display: flex;
@@ -588,7 +590,8 @@
             font-weight: 700;
             color: #fff;
         }
-        .carousel-title i { color: #facc15; }
+        .carousel-title i { color: #a855f7; }
+        .carousel-title > i:first-child { color: #a855f7; }   /* même violet que le clip « Compétences » */
 
         .carousel {
             display: flex;
@@ -632,7 +635,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: #eab308;
+            background: #a855f7;
             font-size: 1.25rem;
             line-height: 1.75rem;
             color: #000;
@@ -749,7 +752,7 @@
         }
 
         .arrow:hover {
-            color: #d6af00;
+            color: #6f00d6;
         }
 
         .soon {
@@ -926,13 +929,13 @@
                 <div class="timeline">
                     <div class="timeline-ruler" title="Glisse pour parcourir la page" aria-hidden="true">
                         <span class="marker clip--profile"></span>
-                        <span class="marker clip--portfolio"></span>
                         <span class="marker clip--skills"></span>
+                        <span class="marker clip--portfolio"></span>
                     </div>
                     <div class="timeline-track">
                         <a class="clip clip--profile" href="#profile"><span>Profil</span></a>
-                        <a class="clip clip--portfolio" href="#portfolio"><span>Portfolio</span></a>
                         <a class="clip clip--skills" href="#skills"><span>Compétences</span></a>
+                        <a class="clip clip--portfolio" href="#portfolio"><span>Portfolio</span></a>
                     </div>
                     <div class="playhead" aria-hidden="true"></div>
                 </div>
@@ -1034,11 +1037,31 @@
         </div>
     </section>
 
+    <!-- Tous mes montages vidéos (cible du clip « Compétences ») -->
+    <section class="portfolio portfolio--montages" id="skills">
+
+        <h3 class="carousel-title">
+            <i class="fa-solid fa-solid fa-play"></i>
+            <span>Tous mes montages vidéos</span>
+
+            <button class="arrow" data-direction="-1"><i class="arrow fa-solid fa-angle-left"></i></button>
+            <button class="arrow" data-direction="1"><i class="arrow fa-solid fa-angle-right"></i></i></button>
+        </h3>
+
+        
+
+        <!-- Les cartes sont créées par le script en bas de page, à partir de ta playlist YouTube -->
+        <div class="carousel">
+            <p class="carousel-status">Chargement des vidéos…</p>
+        </div>
+    </section>
+
+    <!-- Vidéo de présentation (cible du clip « Portfolio ») -->
     <section class="portfolio" id="portfolio">
 
         <div class="portfolio-header">
             <div>
-                <div class="portfolio-label"><i class="fa-solid fa-play"></i> Mon Portfolio</div>
+                <div class="portfolio-label"><i class="fa-solid fa-tv"></i> Mon Portfolio</div>
                 <h2 class="portfolio-title">Vidéo présentation</h2>
                 <p class="portfolio-subtitle">Présentation de mon travail, mes compétences et autres.</p>
             </div>
@@ -1063,21 +1086,6 @@
                 </iframe>
                 -->
             </div>
-        </div>
-
-        <h3 class="carousel-title" id="skills">
-            <i class="fa-solid fa-photo-film"></i>
-            <span>Tous mes montages vidéos</span>
-
-            <button class="arrow" data-direction="-1"><i class="arrow fa-solid fa-angle-left"></i></button>
-            <button class="arrow" data-direction="1"><i class="arrow fa-solid fa-angle-right"></i></i></button>
-        </h3>
-
-        
-
-        <!-- Les cartes sont créées par le script en bas de page, à partir de ta playlist YouTube -->
-        <div class="carousel">
-            <p class="carousel-status">Chargement des vidéos…</p>
         </div>
     </section>
 
