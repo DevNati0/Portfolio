@@ -550,12 +550,19 @@
         }
 
 
+
+        .btn.disabled {
+        pointer-events: none; 
+        opacity: 0.4;      
+        filter: grayscale(100%);
+        }
+
         /* ---------- Tablette et plus (640px) ---------- */
         @media screen and (max-width: 640px){
             .main-nav {
                 position: absolute;
-                top: 5vh;             /* juste sous l'en-tête */
-                right: 0;              /* collé à droite, sous les 3 barres */
+                top: 5vh;             
+                right: 0;              
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -564,7 +571,7 @@
                 font-size: 1.5rem;
                 width: 70vw;
                 height: 40vh;
-                background: rgb(22, 27, 38);   /* fond plein, sinon on voit la page à travers */
+                background: rgb(22, 27, 38);   
                 margin-right: -100%;
                 border: 1px solid #18181b;
                 border-top: none;
@@ -580,7 +587,7 @@
             .main-nav.mobile-menu {
                 margin-right: 0;
             }
-            /* L'icône change : on cache les barres, on affiche la croix */
+            
             .hamburg-nav .fa-xmark {
                 display: none;
             }
@@ -691,7 +698,7 @@
                             <span>Contact discord</span>
                         </a>
                         
-                        <a class="button button--email" href="#" onclick="navigator.clipboard.writeText('contact@exemple.com'); const span = this.querySelector('span'); span.innerText = 'Copié !'; setTimeout(() => span.innerText = 'Mon mail', 2000);";>
+                        <a class="btn disabled button button--email" href="#" aria-disabled="true" onclick="navigator.clipboard.writeText('contact@exemple.com'); const span = this.querySelector('span'); span.innerText = 'Copié !'; setTimeout(() => span.innerText = 'Mon mail', 2000);";>
                             <i class="fa-solid fa-envelope"></i>
                             <span>Mon mail</span>
                         </a>
