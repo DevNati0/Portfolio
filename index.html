@@ -14,7 +14,12 @@
         /* ---------- Base ---------- */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html { line-height: 1.5; scroll-behavior: smooth; overflow-x: clip; }
+        html {
+            line-height: 1.5;
+            scroll-behavior: smooth;
+            scroll-padding-top: 3.5rem;   /* le header est collé en haut : les ancres ne passent pas dessous */
+            overflow-x: clip;
+        }
 
         body {
             min-height: 100vh;
@@ -42,7 +47,8 @@
 
         /* ---------- En-tête ---------- */
         .site-header { 
-            position: relative;
+            position: sticky;
+            top: 0;
             z-index:100;
             border: 1px solid rgba(39, 39, 42, 0.8); 
         }
@@ -112,6 +118,223 @@
             transition: background-color 0.15s;
         }
         .nav-cta:hover { background: #facc15; }
+
+        /* ===== Timeline de montage ===== */
+        .timeline {
+            position: relative;
+            width: clamp(16rem, 34vw, 26rem);
+            height: 3rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #27272a;
+            border-radius: 0.625rem;
+            background: #0a0c13;
+        }
+
+        /* Règle graduée : cliquer / glisser dessus fait défiler la page */
+        .timeline-ruler {
+            flex-shrink: 0;
+            display: flex;
+            gap: 3px;
+            padding: 0 3px;
+            height: 12px;
+            cursor: ew-resize;
+            touch-action: none;
+            background:
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px 8px) 0 100% / 100% 4px no-repeat,
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0 1px, transparent 1px 40px) 0 100% / 100% 8px no-repeat;
+        }
+
+        /* Marqueurs de section (mêmes largeurs que les clips, donc toujours alignés) */
+        .marker {
+            --c: #eab308;
+            position: relative;
+            flex: var(--w, 1) 1 0;
+            min-width: 0;
+            padding: 0 0.6rem;
+            border-left: 3px solid transparent;
+        }
+        .marker::before {
+            content: "";
+            position: absolute;
+            top: 1px;
+            left: -3px;
+            width: 8px;
+            height: 9px;
+            background: var(--c);
+            clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
+        }
+
+        .timeline-track {
+            flex: 1;
+            display: flex;
+            gap: 3px;
+            padding: 0 3px 3px;
+        }
+
+        /* Un clip = une section de la page */
+        .clip {
+            --c: #eab308;
+            position: relative;
+            flex: var(--w, 1) 1 0;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 0.6rem;
+            overflow: hidden;
+            border-left: 3px solid var(--c);
+            border-radius: 0.3rem;
+            background: #1a1d28;
+            background: color-mix(in srgb, var(--c) 16%, #10131c);
+            font-size: 0.8rem;
+            line-height: 1;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            color: #d4d4d8;
+            transition: background-color 0.15s, color 0.15s;
+        }
+        .clip span { position: relative; z-index: 1; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Fausse forme d'onde audio en fond du clip */
+        .clip::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 75%;
+            background: repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 5px);
+            opacity: 0.22;
+            clip-path: polygon(0 70%, 6% 30%, 12% 60%, 19% 10%, 27% 55%, 35% 25%, 43% 70%, 52% 15%, 61% 50%, 70% 20%, 79% 65%, 88% 30%, 100% 55%, 100% 100%, 0 100%);
+            pointer-events: none;
+        }
+
+        .clip--profile   { --c: #e46e20; --w: 1; }
+        .clip--portfolio { --c: #eab308; --w: 1.2; }
+        .clip--skills    { --c: #a855f7; --w: 1.5; }
+
+        .clip:hover { color: #fff; background: color-mix(in srgb, var(--c) 30%, #10131c); }
+        .clip.is-active {
+            color: #fff;
+            background: color-mix(in srgb, var(--c) 38%, #10131c);
+            box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 70%, transparent);
+        }
+
+        /* « Cut » : flash quand la tête de lecture passe d'un clip à l'autre */
+        .clip.cut { animation: cut-flash 0.45s ease-out; }
+        @keyframes cut-flash {
+            from {
+                background: color-mix(in srgb, var(--c) 70%, #fff);
+                box-shadow: inset 0 0 0 2px #fff, 0 0 14px var(--c);
+            }
+        }
+
+        /* Tête de lecture rouge */
+        .playhead {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 3;
+            width: 2px;
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+            transition: transform 0.1s linear;
+            will-change: transform;
+            pointer-events: none;
+        }
+        .playhead::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 7px solid #ef4444;
+        }
+
+        /* ===== Bloc transport : lecture, timecode, vu-mètre ===== */
+        .transport {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            height: 2.5rem;
+            padding: 0 0.75rem 0 0.375rem;
+            border: 1px solid #27272a;
+            border-radius: 0.625rem;
+            background: #0a0c13;
+        }
+
+        /* Icônes ▶ / ⏸ dessinées en CSS (pas besoin de Font Awesome) */
+        .play-btn {
+            width: 1.75rem;
+            height: 1.75rem;
+            display: grid;
+            place-items: center;
+            border: none;
+            border-radius: 0.5rem;
+            background: #1f232f;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+        .play-btn:hover { background: #2d3345; }
+        .play-btn::before {
+            content: "";
+            width: 10px;
+            height: 11px;
+            background: #fff;
+            clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+        }
+        .is-playing .play-btn { background: #ef4444; }
+        .is-playing .play-btn::before {
+            clip-path: none;
+            background: linear-gradient(90deg, #fff 0 35%, transparent 35% 65%, #fff 65%);
+        }
+
+        .timecode {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.8rem;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            color: #e4e4e7;
+        }
+
+        /* Le point REC ne clignote que pendant la lecture */
+        .rec-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ef4444;
+            opacity: 0.45;
+            transition: opacity 0.15s;
+        }
+        .is-playing .rec-dot { opacity: 1; animation: rec-blink 1.2s ease-in-out infinite; }
+        @keyframes rec-blink { 50% { opacity: 0.15; } }
+
+        /* Vu-mètre : réagit à la vitesse de défilement (piloté par le script) */
+        .vu {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 1.1rem;
+        }
+        .vu i {
+            display: block;
+            width: 3px;
+            height: 100%;
+            border-radius: 1px;
+            background: linear-gradient(to top, #4ade80 0 55%, #facc15 55% 82%, #ef4444 82%);
+            clip-path: inset(calc((1 - var(--l, 0.08)) * 100%) 0 0 0);
+        }
+
+        .clip:focus-visible, .play-btn:focus-visible { outline: 2px solid #facc15; outline-offset: 2px; }
 
         /* ---------- Profil ---------- */
         .profile { padding: 3rem 1rem; }
@@ -552,11 +775,12 @@
 
 
 
-        .btn.disabled {
-        pointer-events: none; 
-        opacity: 0.4;      
-        filter: grayscale(100%);
+        .disabled {
+            pointer-events: none; 
+            opacity: 0.4;      
+            filter: grayscale(100%);
         }
+
 
         /* ---------- Téléphone (640px) ---------- */
         @media screen and (max-width: 640px){
@@ -620,6 +844,21 @@
                 font-size: 0.4rem;
             }
 
+            /* ---------- Timeline en version téléphone : liste de clips dans le menu ---------- */
+            .main-nav {
+                height: auto;
+                gap: 1rem;
+                align-items: stretch;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+            .timeline { width: auto; height: auto; overflow: visible; border: none; background: none; }
+            .timeline-ruler, .playhead { display: none; }
+            .timeline-track { flex-direction: column; gap: 0.5rem; padding: 0; }
+            .clip { flex: none; height: 3rem; font-size: 1rem; }
+            .transport { align-self: center; }
+            .nav-cta { text-align: center; padding: 0.75rem 1rem; }
+
 
         }
         @media (min-width: 640px) {
@@ -641,6 +880,12 @@
 
         }
 
+        /* Écrans moyens : on libère de la place pour la timeline (le bouton ▶ reste) */
+        @media (min-width: 641px) and (max-width: 900px) {
+            .timecode, .vu { display: none; }
+            .transport { padding: 0 0.375rem; }
+        }
+
         .contact-text { font-size: 1rem; line-height: 1.5rem; }
         .contact-actions { flex-direction: row; }
         .contact-button { width: auto; }
@@ -652,6 +897,11 @@
             .profile-header, .profile-actions { justify-content: flex-start; }
             .portfolio-header { flex-direction: row; align-items: flex-end; }
 
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .is-playing .rec-dot, .clip.cut { animation: none; }
+            .playhead { transition: none; }
         }
 
 
@@ -672,10 +922,31 @@
                 </a>
             </nav>
             <nav class="main-nav">
-                <!-- Remplace chaque href="#" par ta destination -->
-                <a class="nav-link" href="#profile">Profil</a>
-                <a class="nav-link" href="#portfolio">Portfolio</a>
-                <a class="nav-link" href="#skills">Compétences</a>
+                <!-- Timeline de montage : chaque clip = une section de la page -->
+                <div class="timeline">
+                    <div class="timeline-ruler" title="Glisse pour parcourir la page" aria-hidden="true">
+                        <span class="marker clip--profile"></span>
+                        <span class="marker clip--portfolio"></span>
+                        <span class="marker clip--skills"></span>
+                    </div>
+                    <div class="timeline-track">
+                        <a class="clip clip--profile" href="#profile"><span>Profil</span></a>
+                        <a class="clip clip--portfolio" href="#portfolio"><span>Portfolio</span></a>
+                        <a class="clip clip--skills" href="#skills"><span>Compétences</span></a>
+                    </div>
+                    <div class="playhead" aria-hidden="true"></div>
+                </div>
+
+                <!-- Lecture auto + timecode + vu-mètre -->
+                <div class="transport">
+                    <button class="play-btn" type="button" aria-label="Lire la page"></button>
+                    <div class="timecode" aria-hidden="true">
+                        <span class="rec-dot"></span>
+                        <span class="timecode-value">00:00:00:00</span>
+                    </div>
+                    <div class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                </div>
+
                 <a class="nav-cta" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdenMTrH18ZKB_H1EvuU_5RJKPvBuvwFeTg_pP6SRsTTwEx_A/viewform">Contact</a>
             </nav>
         </div>
@@ -717,7 +988,7 @@
                             <span>Contact discord</span>
                         </a>
                         
-                        <a class="btn disabled button button--email" href="#" aria-disabled="true" onclick="navigator.clipboard.writeText('contact@exemple.com'); const span = this.querySelector('span'); span.innerText = 'Copié !'; setTimeout(() => span.innerText = 'Mon mail', 2000);";>
+                        <a class="btn disabled button button--email" href="#" aria-disabled=isDisabled onclick="navigator.clipboard.writeText('contact@exemple.com'); const span = this.querySelector('span'); span.innerText = 'Copié !'; setTimeout(() => span.innerText = 'Mon mail', 2000);";>
                             <i class="fa-solid fa-envelope"></i>
                             <span>Mon mail</span>
                         </a>
@@ -841,7 +1112,23 @@
 
     
 <script>
+        let isDisabled = false; // Ta variable booléenne (let, sinon "isDisabled = true" plus bas fait planter tout le script)
+        const element = document.querySelector('.btn');
 
+
+        // 1. La date et l'heure qu'on veut tester
+        let dateLimite = new Date("2026-09-20T20:30:00");
+
+        // 2. Le moment exact où on est MANTENANT
+        let maintenant = new Date();
+
+        // 3. On compare : est-ce que "maintenant" est plus grand que "dateLimite" ?
+        if (maintenant > dateLimite) {
+            isDisabled = true;
+        }
+
+        // Active ou désactive la classe selon la variable
+        element.classList.toggle('disabled', isDisabled);
         // ================= À CONFIGURER =================
         const PLAYLIST_ID = 'PLD4fnr0MFCzE';
         const PLAYLIST_URL = 'https://portfolio-playlist.gashmog2.workers.dev/';   // adresse de ton Worker
@@ -979,6 +1266,199 @@
         })
 
 
+    </script>
+
+    <!-- Timeline de montage (script séparé : il marche même si l'autre plante) -->
+    <script>
+    (() => {
+        const header = document.querySelector('.site-header');
+        const timeline = header.querySelector('.timeline');
+        const ruler = header.querySelector('.timeline-ruler');
+        const playhead = header.querySelector('.playhead');
+        const clips = [...header.querySelectorAll('.clip')];
+        const timecode = header.querySelector('.timecode-value');
+        const playBtn = header.querySelector('.play-btn');
+        const bars = [...header.querySelectorAll('.vu i')];
+        const targets = clips.map(clip => document.querySelector(clip.getAttribute('href')));
+
+        const FPS = 30;
+        const DURATION = 180;   // durée "fictive" de la page (en secondes) affichée dans le timecode
+        const SPEED = 140;      // vitesse de la lecture auto (pixels par seconde)
+        const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        let geo = { headerH: 0, maxY: 1, tops: [] };
+        let boxes = [];
+        let headVisible = true;
+        let activeIndex = -1;
+        let level = 0, lastY = scrollY, vuFrame = 0;
+        let playing = false, pos = 0, lastT = 0;
+
+        clips.forEach(clip => clip.addEventListener('animationend', () => clip.classList.remove('cut')));
+
+        // ---------- Mesures : où commence chaque section, où est chaque clip ----------
+        function measure() {
+            const headerH = header.offsetHeight;
+            const maxY = Math.max(1, document.documentElement.scrollHeight - innerHeight + headerH);
+            const n = clips.length;
+            const tops = [];
+
+            targets.forEach((target, i) => {
+                if (i === 0) return tops.push(0);
+                const raw = target ? target.getBoundingClientRect().top + scrollY : maxY;
+                // On borne pour que chaque clip reste atteignable, même sur un très grand écran
+                tops.push(Math.max(tops[i - 1] + 1, Math.min(raw, maxY - (n - i) * 40)));
+            });
+            geo = { headerH, maxY, tops };
+
+            headVisible = getComputedStyle(playhead).display !== 'none';
+            if (headVisible) {
+                const tl = timeline.getBoundingClientRect();
+                boxes = clips.map(clip => {
+                    const r = clip.getBoundingClientRect();
+                    return { left: r.left - tl.left - timeline.clientLeft, width: r.width };
+                });
+            }
+        }
+
+        const pad = n => String(n).padStart(2, '0');
+        function format(progress) {
+            const f = Math.round(progress * DURATION * FPS);
+            const s = Math.floor(f / FPS);
+            return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60, f % FPS].map(pad).join(':');
+        }
+
+        // ---------- Vu-mètre : réagit à la vitesse de défilement ----------
+        function vuTick() {
+            level *= 0.9;
+            bars.forEach((bar, k) => {
+                const l = level * (0.55 + Math.random() * 0.45) * (1 - k * 0.07);
+                bar.style.setProperty('--l', Math.max(0.08, Math.min(1, l)).toFixed(2));
+            });
+            vuFrame = level > 0.03 ? requestAnimationFrame(vuTick) : 0;
+        }
+
+        function bump() {
+            const dy = Math.abs(scrollY - lastY);
+            lastY = scrollY;
+            if (calm || !dy) return;
+            level = Math.min(1, Math.max(level, dy / 24));
+            if (!vuFrame) vuFrame = requestAnimationFrame(vuTick);
+        }
+
+        // ---------- Mise à jour au scroll ----------
+        function update() {
+            const y = scrollY + geo.headerH;   // ligne de lecture : juste sous le header
+            let i = 0;
+            geo.tops.forEach((top, k) => { if (y >= top - 2) i = k; });
+
+            const end = geo.tops[i + 1] ?? geo.maxY;
+            const p = Math.min(1, Math.max(0, (y - geo.tops[i]) / Math.max(1, end - geo.tops[i])));
+
+            if (i !== activeIndex) {
+                if (activeIndex !== -1) {
+                    clips[i].classList.remove('cut');
+                    void clips[i].offsetWidth;   // relance l'animation
+                    clips[i].classList.add('cut');
+                }
+                activeIndex = i;
+            }
+
+            clips.forEach((clip, k) => {
+                clip.classList.toggle('is-active', k === i);
+                if (k === i) clip.setAttribute('aria-current', 'location');
+                else clip.removeAttribute('aria-current');
+            });
+
+            if (headVisible && boxes[i]) {
+                playhead.style.transform = `translateX(${boxes[i].left + p * boxes[i].width - 1}px)`;
+            }
+
+            const maxScroll = geo.maxY - geo.headerH;
+            const overall = maxScroll > 0 ? Math.min(1, Math.max(0, scrollY / maxScroll)) : 0;
+            timecode.textContent = format(overall);
+            bump();
+        }
+
+        let queued = false;
+        function schedule() {
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(() => { queued = false; update(); });
+        }
+        function refresh() { measure(); update(); }
+
+        addEventListener('scroll', schedule, { passive: true });
+        addEventListener('resize', refresh);
+        addEventListener('load', refresh);
+        new ResizeObserver(refresh).observe(document.body);   // la page grandit quand les vidéos se chargent
+        if (document.fonts) document.fonts.ready.then(refresh);
+
+        // ---------- Scrub : cliquer / glisser sur la règle fait défiler la page ----------
+        let scrubbing = false;
+        function seek(clientX) {
+            if (!boxes.length) return;
+            const tl = timeline.getBoundingClientRect();
+            const x = clientX - tl.left - timeline.clientLeft;
+            let i = boxes.findIndex(b => x <= b.left + b.width + 1.5);
+            if (i < 0) i = boxes.length - 1;
+
+            const b = boxes[i];
+            const p = Math.min(1, Math.max(0, (x - b.left) / b.width));
+            const end = geo.tops[i + 1] ?? geo.maxY;
+            const y = geo.tops[i] + p * (end - geo.tops[i]);
+            scrollTo({ top: y - geo.headerH, behavior: 'instant' });
+        }
+
+        ruler.addEventListener('pointerdown', e => {
+            scrubbing = true;
+            ruler.setPointerCapture(e.pointerId);
+            seek(e.clientX);
+        });
+        ruler.addEventListener('pointermove', e => { if (scrubbing) seek(e.clientX); });
+        ['pointerup', 'pointercancel'].forEach(type => ruler.addEventListener(type, () => { scrubbing = false; }));
+
+        // ---------- Lecture : la page défile toute seule, comme une vidéo ----------
+        function setPlaying(on) {
+            playing = on;
+            header.classList.toggle('is-playing', on);
+            playBtn.setAttribute('aria-label', on ? 'Mettre en pause' : 'Lire la page');
+            if (on) {
+                pos = scrollY;
+                lastT = performance.now();
+                requestAnimationFrame(tick);
+            }
+        }
+
+        function tick(now) {
+            if (!playing) return;
+            const maxScroll = geo.maxY - geo.headerH;
+            pos += SPEED * (now - lastT) / 1000;
+            lastT = now;
+            if (pos >= maxScroll) {
+                scrollTo({ top: maxScroll, behavior: 'instant' });
+                setPlaying(false);   // fin de la « vidéo »
+                return;
+            }
+            scrollTo({ top: pos, behavior: 'instant' });
+            requestAnimationFrame(tick);
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (playing) return setPlaying(false);
+            if (scrollY >= geo.maxY - geo.headerH - 2) scrollTo({ top: 0, behavior: 'instant' });   // déjà à la fin : on repart du début
+            setPlaying(true);
+        });
+
+        // Dès que tu reprends la main, la lecture s'arrête
+        ['wheel', 'touchstart'].forEach(type => addEventListener(type, () => { if (playing) setPlaying(false); }, { passive: true }));
+        addEventListener('keydown', e => {
+            if (e.target !== playBtn && ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(e.key)) setPlaying(false);
+        });
+        ruler.addEventListener('pointerdown', () => setPlaying(false));
+        header.addEventListener('click', e => { if (e.target.closest('a')) setPlaying(false); });
+
+        refresh();
+    })();
     </script>
 </body>
 </html>
